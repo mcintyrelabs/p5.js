@@ -220,10 +220,21 @@ p5.prototype.loadFont = function(path, onSuccess, onError) {
  * The text 'p5.js' spinning in 3d
  */
 p5.prototype.text = function(str, x, y, maxWidth, maxHeight) {
+  let _text;
+  const rightHanded = this._coordinateMode === this.RIGHT_HAND;
+  if (rightHanded) {
+    this.push();
+    this.scale(1, -1);
+    arguments[2] = -y;
+  }
   p5._validateParameters('text', arguments);
-  return !(this._renderer._doFill || this._renderer._doStroke)
+  _text = !(this._renderer._doFill || this._renderer._doStroke)
     ? this
     : this._renderer.text(...arguments);
+  if (rightHanded) {
+    this.pop();
+  }
+  return _text;
 };
 
 /**
